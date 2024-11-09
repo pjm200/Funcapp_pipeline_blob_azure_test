@@ -1,0 +1,32 @@
+trigger:
+  branches:
+    include:
+      - master
+
+pool:
+  name: Peter_Self_Hosted
+
+stages:
+- stage: Build_and_Deploy
+  displayName: 'Build and Deploy Stage'
+  jobs:
+  - job: BuildAndDeploy
+    displayName: 'Build and Deploy Job'
+    steps:
+    - task: ArchiveFiles@2
+      displayName: 'Archive Function App Files into ZIP'
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/functionapp.zip'
+        replaceExistingArchive: true
+
+    - task: AzureCLI@2
+      displayName: 'Deploy to Azure Function App with Remote Build'
+      inputs:
+        azureSubscription: 'Azure subscription 1(96e2cc10-5944-4e27-a39c-03f4710a8c44)'
+        scriptType: 'ps'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+          az functionapp deployment source config-zip --resource-group functionapp_blob_pipleline_test --name listblobs10 --src "$(Build.ArtifactStagingDirectory)/functionapp.zip" --build-remote
