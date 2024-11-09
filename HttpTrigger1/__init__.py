@@ -20,5 +20,5 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
     blobs = [blob.name for blob in blob_list]
 
     # Return blob names as a response
-    return func.HttpResponse(f"PMtest1 - Peter Macfie has got this working :-)\nBlobs in '{container_name}': {', '.join(blobs)}")
+    return func.HttpResponse(f"PMtest2 - Peter Macfie has got this working :-)\nBlobs in '{container_name}': {', '.join(blobs)}")
 
